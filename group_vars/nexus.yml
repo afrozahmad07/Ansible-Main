@@ -1,0 +1,4 @@
+---
+# Default Login details
+
+  ansible_network_os: "nxos"

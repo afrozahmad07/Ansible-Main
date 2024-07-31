@@ -1,0 +1,11 @@
+---
+- name: Backup IOS-XE Devices
+  hosts: ios-xe
+
+  tasks:
+    - name: Backup IOS-XE Devices
+      cisco.ios.ios_config:
+       backup: true
+       backup_options:
+         filename: "{{ inventory_hostname }}-backup.txt"
+         dir_path: ./BACKUPS
