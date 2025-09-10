@@ -1,0 +1,751 @@
+!Command: show running-config
+!Running configuration last done at: Thu Aug 15 23:02:33 2024
+!Time: Fri Aug 16 00:05:45 2024
+
+version 10.3(3) Bios:version  
+hostname nxos
+install feature-set mpls
+install feature-set virtualization
+vdc nxos id 1
+  allow feature-set virtualization
+  allow feature-set mpls
+  limit-resource vlan minimum 16 maximum 4094
+  limit-resource vrf minimum 2 maximum 4097
+  limit-resource port-channel minimum 0 maximum 511
+  limit-resource m4route-mem minimum 58 maximum 58
+  limit-resource m6route-mem minimum 8 maximum 8
+feature-set mpls
+
+feature nxapi
+feature bash-shell
+feature scp-server
+feature sftp-server
+feature tacacs+
+cfs eth distribute
+feature scheduler
+nv overlay evpn
+feature ospf
+feature bgp
+feature eigrp
+feature fabric forwarding
+feature netconf
+feature restconf
+feature grpc
+feature mpls ldp
+feature interface-vlan
+feature vn-segment-vlan-based
+feature hsrp
+feature lacp
+feature dhcp
+feature macsec
+feature vpc
+feature lldp
+feature bfd
+feature nv overlay
+feature app-hosting
+
+logging level netstack 6
+
+username admin password 5 $5$NOJJKL$mFlw8E8BC4h.LLDDTkBUuHQNtk3MFslr7hqy7j3Rwq5  role network-admin
+username nando password 5 $5$HBLDOL$dsFXybOHh4XslnUsbgPghD/n483CpXlpymfiMfSCqD8  role network-operator
+username nando passphrase  lifetime 99999 warntime 14 gracetime 3
+username kali password 5 $5$KLEBLC$ty7kCxcRlJPqLpB7fuqcY/4vorZYefznmu0CZQzhZL0  role network-admin
+username kali sshkey ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDnF6TH9Ov24EFEYPfos0u8zcxxdI/GIkeTJh1YtjUN2C0fxiyv87grJtdLLmw86sGmJv217ZSAm+fKE/A4vX8h52/8vu+dsJ+JWj1Es+/Z8zip+Ck2OfEMzkAGoF8c/n1GqKdSfKlAhiIae37Kvse/HG65CLYwkXoQfP1zlYHKNQ== kali@kali
+username kali passphrase  lifetime 99999 warntime 14 gracetime 3
+username cold password 5 $5$EBLAGM$9b9pKxsTzmLj45zN1SvKZisB/d0zmcqKuH9AUa/ek07  role network-admin
+username cold passphrase  lifetime 99999 warntime 14 gracetime 3
+username temp_user2000 password 5 $5$AFPCHP$dKIqgwjxASvXqPqoHRdJU9pbas7GzYXoNGhV2pythg0 expire 2030-07-31 role network-operator
+username temp_user2000 passphrase  lifetime 99999 warntime 14 gracetime 3
+username temp_paulz password 5 $5$CLGJBN$FninnUSJdow9qRpgO.pwn2ifdLSBifQ72hIEWbgs3p1 expire 2030-07-31 role network-operator
+username temp_paulz passphrase  lifetime 99999 warntime 14 gracetime 3
+username test password 5 $5$OOBLCF$TJ1diladIUsjq00.0D6O1T.TA12rNFqmxEv1X7Qq/w9  role network-operator
+username test passphrase  lifetime 99999 warntime 14 gracetime 3
+username myname password 8 $nx-pbkdf2$tOYK8fvuvxu9Vk$mj05WRTopxHX8Np26gOGPiT4wGjL3aaX982nVVT6SYo  role network-admin
+username myname passphrase  lifetime 99999 warntime 14 gracetime 3
+ssh key rsa 2048 
+
+banner motd @
+"Hello there! Hoping you are having a great day
+... Welcome to '$(hostname)',
+ your favorite CISCO.NXOS.NXOS Sandbox"
+@
+
+ssh ciphers all
+
+ssh keytypes all
+
+ip domain-lookup
+aaa group server tacacs+ ISE_GROUP 
+ip access-list ACCESS
+ip access-list IPv4-ACL
+  10 deny tcp any 198.51.100.0 0.0.0.255 
+  20 permit tcp any any 
+ip access-list THE_ACL
+  10 remark the first one 
+  20 permit ip 1.1.1.1/32 any 
+  21 remark this is 21
+  22 permit ip 5.5.5.5/32 6.6.6.6/32 
+  30 remark the second one
+  40 permit ip 2.2.2.2/32 any 
+  50 remark explicit deny
+  60 deny ip any any 
+ip access-list test
+  statistics per-entry
+  10 permit ip any any log 
+time-range mon,tue
+time-range mon,tue,wed,thu,fri
+class-map type qos match-any HA
+  match cos 5
+  match dscp 40
+copp profile strict
+snmp-server user cold network-admin auth md5 3339A438CDFA8EED1D1A5FFE21FF5E23A71C priv aes-128 5334D30E4B3B0639DFFAD45DA96299B97499 localizedV2key
+snmp-server user kali network-admin auth md5 332D35D4C3E086B6C4CE34D8869493789C9D priv aes-128 367A6A94C0BCD1C6DAD523DD8895C07F9896 localizedV2key
+snmp-server user test network-operator auth md5 53152274D9AC38352D92955195FBAF62B53D priv aes-128 01576E3B361BDAEEC3041593113324BA72F8 localizedV2key
+snmp-server user admin network-admin auth md5 52036704DA8793EDC8726140EB5216EDEA84 priv aes-128 37462F1D8084C3B9C47C4E72B94807AEF7D2 localizedV2key
+snmp-server user nando network-operator auth md5 054B1DFF8CCEFCB99B932EC0DEC7C95FECBA priv aes-128 057A48A3F5B1D692B0B0558B8E82980BEEE8 localizedV2key
+snmp-server user myname network-admin auth md5 21750CB5716F0DACC3896B6A7F858B770EBE priv aes-128 52337D991C1160FF9B88097E79C9EB665D8C localizedV2key
+snmp-server user temp_paulz network-operator auth md5 483B193D785F0821C09BC94F748F90BBC1AE priv aes-128 53351B29D90C5739C090B3083C89A8F298B5 localizedV2key
+snmp-server user temp_user2000 network-operator auth md5 377308337B7E2B4EBAF6D2217488B9A9CEE7 priv aes-128 17481100153E2652A2E1F25A7E81F2A2C6B5 localizedV2key
+rmon event 1 log trap public description FATAL(1) owner PMON@FATAL
+rmon event 2 log trap public description CRITICAL(2) owner PMON@CRITICAL
+rmon event 3 log trap public description ERROR(3) owner PMON@ERROR
+rmon event 4 log trap public description WARNING(4) owner PMON@WARNING
+rmon event 5 log trap public description INFORMATION(5) owner PMON@INFO
+snmp-server community public group network-operator
+callhome
+  no periodic-inventory notification
+  periodic-inventory notification interval  3
+
+vlan 1,3,10,20,30,99-105,107,111,123-125,199-200,299,400-401,1000,2002,2300,3000-3001,3400-3401,3404-3405,3500
+vlan 3
+  name test
+vlan 10
+  name Operations
+vlan 20
+  name Parking_Lot
+vlan 99
+  name Management
+vlan 100
+  name customer
+vlan 101
+  name ashour
+vlan 102
+  name Diplomado
+vlan 103
+  name IoT
+vlan 104
+  name Nueva
+vlan 105
+  name LL_VLAN_DEMO1
+vlan 199
+  name xml
+vlan 1000
+  name Test
+vlan 2002
+  name OSPF_Routing
+vlan 2300
+  name hola
+vlan 3001
+  name chau
+vlan 3400
+  name NDI-DATA-NETWORK
+vlan 3401
+  name INB-MGMT-UNDERLAY
+vlan 3404
+  name INB-MGMT-L3OUT
+vlan 3405
+  name NDO-DATA-NETWORK
+
+spanning-tree vlan 1-3967 priority 0
+route-map QWE permit 5
+route-map QWE deny 20
+route-map QWE deny 50
+route-map test1 permit 10
+route-map test1000 permit 10
+key chain MACSEC macsec
+service dhcp
+ip dhcp relay
+ipv6 dhcp relay
+vrf context CUST-A
+  rd 100:200
+  address-family ipv4 unicast
+vrf context CUST-C
+  rd 300:400
+  address-family ipv4 unicast
+vrf context GN
+  rd 25:3
+  address-family ipv4 unicast
+    route-target import 25:3
+    route-target export 25:3
+vrf context IPNX
+vrf context abb
+vrf context aci-inb-mgmt
+  description !VRF for ACI Inband-Mgmt UNDERLAY !!!
+vrf context management
+  ip route 0.0.0.0/0 10.10.20.254
+vrf context mgmt0
+vrf context test
+vpc domain 1
+  peer-keepalive destination 192.168.1.2 source 192.168.1.1
+
+macsec policy TEST
+  window-size 64
+
+
+interface Vlan1
+
+interface Vlan10
+  ip address 10.1.1.1/24
+  hsrp version 2
+  hsrp 1 
+
+interface Vlan100
+  description dm100
+  no shutdown
+
+interface Vlan200
+  description dm200
+  no shutdown
+
+interface Vlan2001
+  ip address 192.168.255.1/24
+
+interface Vlan2002
+  no shutdown
+  ip address 192.168.250.1/24
+  ip ospf network broadcast
+  ip router ospf 1 area 0.0.0.0
+
+interface Vlan3400
+  description !SVI=DATA NETWORK-> [NEXUS DASHBOARD INSIGHTS CLUSTER]
+  no shutdown
+  mtu 9196
+  vrf member aci-inb-mgmt
+  no ip redirects
+  ip address 10.124.9.251/28
+  ip ospf network broadcast
+  ip router ospf aci-inb-mgmt area 0.0.0.0
+  hsrp version 2
+  hsrp 3400 
+    priority 255
+    ip 10.124.9.254
+
+interface Vlan3401
+  description !SVI=INB-MGMT-> CRTR1-TBRE-DC6-E47-[Hu0/0/1/2.3401]
+  no shutdown
+  mtu 9000
+  vrf member aci-inb-mgmt
+  no ip redirects
+  ip address 10.124.9.177/30
+  ip ospf network point-to-point
+  ip router ospf aci-inb-mgmt area 0.0.0.0
+
+interface Vlan3404
+  description !SVI=INB-MGMT->Leaf201/Leaf202-[L3OUT]
+  no shutdown
+  mtu 9000
+  vrf member aci-inb-mgmt
+  no ip redirects
+  ip address 10.124.9.202/29
+  ip ospf network broadcast
+  ip router ospf aci-inb-mgmt area 0.0.0.0
+
+interface Vlan3405
+  description !SVI=DATA NETWORK-> [NEXUS DASHBOARD ORCHESTRATOR CLUSTER]
+  no shutdown
+  mtu 9216
+  ip address 10.124.9.217/29
+  ip ospf network broadcast
+  hsrp version 2
+  hsrp 3405 
+    priority 255
+    ip 10.124.9.222
+
+interface port-channel1
+  switchport mode trunk
+
+interface port-channel10
+
+interface port-channel20
+  description --hello--
+
+interface port-channel30
+  description --bye--
+
+interface port-channel40
+  description ***Yusuf***
+
+interface port-channel701
+  switchport mode trunk
+  switchport trunk allowed vlan 2-3400,3402-4094
+
+interface port-channel3404
+  description !vPC=INB-MGMT->Leaf201/Leaf202-[L3OUT]
+  switchport mode trunk
+  switchport trunk allowed vlan 3404
+  mtu 9216
+
+interface Ethernet1/1
+  description hola como estas
+  no switchport
+  mtu 9216
+  ip address 192.168.10.10/24
+  ip ospf network point-to-point
+  no shutdown
+
+interface Ethernet1/2
+  description hola como estas 
+  switchport mode trunk
+  switchport trunk allowed vlan 2002
+
+interface Ethernet1/3
+  description mahmoed_1
+  channel-group 40
+
+interface Ethernet1/4
+  description yusuf-yonis-layla
+  no switchport
+  no shutdown
+
+interface Ethernet1/5
+  description Yusuf-
+  no switchport
+  mtu 9216
+
+interface Ethernet1/5.12
+  encapsulation dot1q 12
+  ip address 2.2.2.2/24
+
+interface Ethernet1/5.13
+  encapsulation dot1q 13
+  ip address 1.2.3.5/24
+
+interface Ethernet1/5.15
+  encapsulation dot1q 15
+  no shutdown
+
+interface Ethernet1/5.16
+  mtu 9216
+  encapsulation dot1q 16
+  no shutdown
+
+interface Ethernet1/5.3403
+  description !R=INB-MGMT-L3-> ISN2-TBRE-DC6-E6-[E1/5.3403]
+  mtu 9000
+  encapsulation dot1q 3403
+  vrf member aci-inb-mgmt
+  ip address 10.124.9.173/30
+  ip ospf network point-to-point
+  ip router ospf aci-inb-mgmt area 0.0.0.0
+  no shutdown
+
+interface Ethernet1/6
+  description hoyo-abo-khader
+  switchport mode trunk
+  switchport trunk allowed vlan 10-20,50-60,1000-2000
+  storm-control broadcast level pps 2000000
+
+interface Ethernet1/7
+  description Yusuf-
+  switchport mode trunk
+  switchport trunk allowed vlan 10-20,50-60
+  storm-control broadcast level pps 2000000
+
+interface Ethernet1/8
+  description Yusuf-
+  switchport access vlan 10
+
+interface Ethernet1/9
+  description Yusuf-
+  switchport mode trunk
+  channel-group 1 mode active
+
+interface Ethernet1/10
+  description Yusuf-
+  switchport access vlan 400
+
+interface Ethernet1/11
+  description ----Layla
+
+interface Ethernet1/12
+  description ----Layla
+  no switchport
+
+interface Ethernet1/12.15
+  encapsulation dot1q 15
+  ip address 7.8.9.10/24
+  no shutdown
+
+interface Ethernet1/12.16
+  encapsulation dot1q 16
+  no shutdown
+
+interface Ethernet1/13
+  description Link to esxi-01 port nic 0 for Virtualization Host
+  switchport mode trunk
+  switchport access vlan 3405
+  switchport trunk allowed vlan 30
+  spanning-tree port type edge
+  mtu 9216
+
+interface Ethernet1/14
+  description Link to esxi-01 port nic 1 for Virtualization Host
+  switchport mode trunk
+  switchport access vlan 3405
+  spanning-tree port type edge
+  mtu 9216
+
+interface Ethernet1/15
+  description Link to esxi-01 port nic 2 for Virtualization Host
+  switchport mode trunk
+
+interface Ethernet1/16
+  description Link to esxi-01 port nic 3 for Virtualization Host
+  switchport mode trunk
+
+interface Ethernet1/17
+  description Link to esxi-02 port nic 0 for Virtualization Host
+  switchport mode trunk
+
+interface Ethernet1/18
+  description Link to esxi-02 port nic 1 for Virtualization Host
+  switchport mode trunk
+
+interface Ethernet1/19
+  description Link to esxi-02 port nic 2 for Virtualization Host
+  switchport mode trunk
+
+interface Ethernet1/20
+  description Configured by Ansible
+  shutdown
+  switchport mode trunk
+
+interface Ethernet1/21
+  description Link to esxi-03 port nic 0 for Virtualization Host
+  switchport mode trunk
+
+interface Ethernet1/22
+  description Link to esxi-03 port nic 1 for Virtualization Host
+  switchport mode trunk
+
+interface Ethernet1/23
+  description Link to esxi-03 port nic 2 for Virtualization Host
+  switchport mode trunk
+
+interface Ethernet1/24
+  description Configured by Nando
+  switchport mode trunk
+
+interface Ethernet1/25
+  switchport mode trunk
+  switchport access vlan 3400
+  spanning-tree port type edge
+
+interface Ethernet1/26
+  description Configured by Mateo
+  shutdown
+  switchport mode trunk
+  switchport access vlan 3400
+  spanning-tree port type edge
+
+interface Ethernet1/27
+  description Link to esxi-04 port nic 2 for Virtualization Host
+  switchport mode trunk
+  switchport access vlan 3400
+  spanning-tree port type edge
+
+interface Ethernet1/28
+  description Link to esxi-04 port nic 3 for Virtualization Host
+  switchport mode trunk
+  switchport access vlan 3400
+  spanning-tree port type edge
+  speed 1000
+  duplex full
+
+interface Ethernet1/29
+  description Link to esxi-05 port nic 0 for Virtualization Host
+  switchport mode trunk
+  switchport trunk allowed vlan 3404
+  mtu 9216
+  channel-group 3404 mode active
+
+interface Ethernet1/30
+  description Link to esxi-05 port nic 1 for Virtualization Host
+  switchport mode trunk
+  switchport trunk allowed vlan 3404
+  mtu 9216
+  channel-group 3404 mode active
+
+interface Ethernet1/31
+  description Link to esxi-05 port nic 2 for Virtualization Host
+  switchport mode trunk
+  switchport trunk allowed vlan 3404
+  mtu 9216
+
+interface Ethernet1/32
+  description Link to esxi-05 port nic 3 for Virtualization Host
+  switchport mode trunk
+
+interface Ethernet1/33
+  description Link to esxi-06 port nic 0 for Virtualization Host
+  switchport mode trunk
+
+interface Ethernet1/34
+  description Link to esxi-06 port nic 1 for Virtualization Host
+  switchport mode trunk
+
+interface Ethernet1/35
+  description Link to esxi-06 port nic 2 for Virtualization Host
+  switchport mode trunk
+
+interface Ethernet1/36
+  description Link to esxi-06 port nic 3 for Virtualization Host
+  switchport mode trunk
+
+interface Ethernet1/37
+  description Link to esxi-07 port nic 0 for Virtualization Host
+  switchport mode trunk
+
+interface Ethernet1/38
+  description Link to esxi-07 port nic 1 for Virtualization Host
+  switchport mode trunk
+
+interface Ethernet1/39
+  description Link to esxi-07 port nic 2 for Virtualization Host
+  switchport mode trunk
+
+interface Ethernet1/40
+  description Link to esxi-07 port nic 3 for Virtualization Host
+  switchport mode trunk
+
+interface Ethernet1/41
+  description Link to esxi-08 port nic 0 for Virtualization Host
+  switchport mode trunk
+
+interface Ethernet1/42
+  description Link to esxi-08 port nic 1 for Virtualization Host
+  switchport mode trunk
+
+interface Ethernet1/43
+  description Link to esxi-08 port nic 2 for Virtualization Host
+  switchport mode trunk
+
+interface Ethernet1/44
+  description Link to esxi-08 port nic 3 for Virtualization Host
+  switchport mode trunk
+  switchport trunk allowed vlan 2-4094
+
+interface Ethernet1/45
+  description Link to db-01 port nic 0 for Database Server
+  switchport access vlan 101
+
+interface Ethernet1/46
+  description Link to db-01 port nic 1 for Database Server
+  switchport access vlan 101
+
+interface Ethernet1/47
+  description Link to db-02 port nic 0 for Database Server
+  switchport access vlan 101
+
+interface Ethernet1/48
+  description Link to db-02 port nic 1 for Database Server
+  switchport access vlan 101
+
+interface Ethernet1/49
+  description Link to db-03 port nic 0 for Database Server
+  switchport access vlan 101
+
+interface Ethernet1/50
+  description Link to db-03 port nic 1 for Database Server
+  switchport mode trunk
+  switchport trunk allowed vlan 2-3400,3402-4094
+  channel-group 701 mode active
+
+interface Ethernet1/51
+  description Link to dev-db-01 port nic 0 for Database Server
+  switchport mode trunk
+  switchport trunk allowed vlan 2-3400,3402-4094
+  channel-group 701 mode active
+
+interface Ethernet1/52
+  description Link to dev-db-01 port nic 1 for Database Server
+  switchport access vlan 102
+
+interface Ethernet1/53
+  description Link to dev-db-02 port nic 0 for Database Server
+  switchport access vlan 102
+
+interface Ethernet1/54
+  description Link to dev-db-02 port nic 1 for Database Server
+  switchport access vlan 102
+
+interface Ethernet1/55
+  description Link to dev-db-03 port nic 0 for Database Server
+  switchport access vlan 102
+
+interface Ethernet1/56
+  description Link to dev-db-03 port nic 1 for Database Server
+  switchport access vlan 102
+
+interface Ethernet1/57
+  description Link to admin-01 port nic 0 for Admin Server
+  switchport access vlan 100
+
+interface Ethernet1/58
+  description Link to admin-01 port nic 2 for Admin Server
+  switchport access vlan 100
+
+interface Ethernet1/59
+  description Link to server-01 port nic 0 for App Server
+  switchport access vlan 103
+
+interface Ethernet1/60
+  description Link to server-01 port nic 1 for App Server
+  switchport access vlan 103
+
+interface Ethernet1/61
+  description Link to server-02 port nic 0 for App Server
+  switchport access vlan 104
+
+interface Ethernet1/62
+  description Link to server-02 port nic 1 for App Server
+  switchport access vlan 104
+
+interface Ethernet1/63
+  description Link to server-03 port nic 0 for App Server
+  switchport access vlan 105
+
+interface Ethernet1/64
+  description Link to server-03 port nic 1 for App Server
+  switchport access vlan 105
+
+interface mgmt0
+  ip access-group test in
+  vrf member management
+  ip address 10.10.20.95/24
+  ip router ospf 1 area 0.0.0.0
+
+interface loopback1
+  ip address 192.168.0.1/24
+
+interface loopback5
+
+interface loopback6
+
+interface loopback30
+  description My Learning Lab Loopback
+
+interface loopback31
+  description My Learning Lab Loopback
+
+interface loopback40
+  description My Learning Lab Loopback
+
+interface loopback60
+  description My Learning Lab Loopback
+
+interface loopback99
+  description Interface added via NETCONF
+  ip address 10.99.99.1/24
+
+interface loopback100
+  description This is a loopback
+  ip address 100.100.100.100/32
+
+interface loopback101
+  description This is another loopback
+  ip address 192.0.2.18/24
+  ip address 203.0.113.4/24 secondary
+  ipv6 address 2001:db8:f00d::1/64
+
+interface loopback155
+  ip address 192.168.155.1/32
+
+interface loopback165
+  ip address 192.168.165.1/32
+
+interface loopback201
+  ip address 192.168.201.1/32
+
+interface loopback1010
+  vrf member IPNX
+  ip address 1.1.1.1/32
+  ip router ospf IPN area 0.0.0.0
+icam monitor scale
+
+cli alias name COPYRUNSTART copy running-config startup-config
+cli alias name wr copy running-config startup-config
+cli var name enable enable 
+line console
+  exec-timeout 0
+  terminal width  511
+line vty
+  exec-timeout 0
+boot nxos bootflash:/nxos64-cs.10.3.3.F.bin 
+event manager applet SAVECONFIG
+  event cli match "copy running-config bootflash:CFG_ARCHIVE/config"
+  action 1.0 cli command "enable"
+  action 1.1 cli command "copy running-config bootflash:CFG_ARCHIVE/config-$(date +%Y%m%d%H%M%S)"
+monitor session 1 
+
+app-hosting bridge 1
+  ip address 192.168.10.10/24
+app-hosting appid Melika
+  app-vnic gateway bridge 1 guest-interface 0
+    guest-ipaddress 192.168.10.100/24
+    app-default-gateway 192.168.10.200 guest-interface 0
+logging server 10.10.20.175
+logging server 192.168.1.100
+no logging console
+router eigrp 1
+router ospf 1
+  bfd
+  vrf management
+  mpls ldp autoconfig area 0.0.0.0
+router ospf 2
+  vrf GN
+router ospf IPN
+  bfd
+  vrf IPNX
+    router-id 1.1.1.1
+    auto-cost reference-bandwidth 100000 Mbps
+    passive-interface default
+router ospf aci-inb-mgmt
+  vrf aci-inb-mgmt
+router bgp 25
+  address-family ipv4 unicast
+  address-family vpnv4 unicast
+  neighbor 2.2.2.2
+    remote-as 25
+    update-source loopback0
+    address-family vpnv4 unicast
+      send-community extended
+  vrf GN
+    neighbor 2.2.2.2
+
+scheduler logfile size 1024
+
+
+scheduler job name WEEKDAY_JOB
+  echo $(TIMESTAMP)
+  
+end-job
+
+scheduler job name WEEKLY_BACKUP_FLASH
+  copy running-config bootflash:/CFG_ARCHIVE/$(SWITCHNAME)_$(TIMESTAMP).txt vdc-all
+  
+end-job
+
+scheduler job name BackupConfigJob
+end-job
+
+scheduler schedule name DAILY
+  time daily 19:15
+
+scheduler schedule name WEEKDAY_SCHEDULE
+  job name WEEKDAY_JOB
+  time weekly 06:06:00
+
+scheduler schedule name WEEKLY_BACKUP
+  job name WEEKLY_BACKUP_FLASH
+  time daily 19:37

@@ -1,4 +1,6 @@
 ---
 # Default Login details
 
+  ansible_user: "admin"
+  ansible_ssh_pass: "Admin_1234!"
   ansible_network_os: "nxos"

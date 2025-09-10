@@ -1,10 +1,17 @@
 [ios-xe]
 devnetsandboxiosxe.cisco.com
+sandbox-iosxe-recomm-1.cisco.com
+
+[nexus]
+sbx-nxos-mgmt.cisco.com
+
+[iosxr]
+sandbox-iosxr-1.cisco.com
+
+[big-ip-f5]
+172.26.252.108
 
 [servers]
 
-[nexus]
-
 [nokia-sr-os]
 
-[F5]

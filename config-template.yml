@@ -1,0 +1,7 @@
+--- 
+- name: Config Templates
+  hosts: nexus
+  tasks:
+    - template:
+        src: nxos-template.j2
+        dest: ./CONFIGS/{{ inventory_hostname }}_config.txt

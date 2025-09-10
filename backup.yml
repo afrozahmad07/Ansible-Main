@@ -9,3 +9,25 @@
        backup_options:
          filename: "{{ inventory_hostname }}-backup.txt"
          dir_path: ./BACKUPS
+
+- name: Backup Nexus Devices
+  hosts: nexus
+
+  tasks:
+    - name: Backup Nexus Devices
+      cisco.nxos.nxos_config:
+       backup: true
+       backup_options:
+         filename: "{{ inventory_hostname }}-backup.txt"
+         dir_path: ./BACKUPS
+
+- name: Backup IOS-XR Devices
+  hosts: iosxr
+
+  tasks:
+    - name: Backup IOS-XR Devices
+      cisco.iosxr.iosxr_config:
+       backup: true
+       backup_options:
+         filename: "{{ inventory_hostname }}-backup.txt"
+         dir_path: ./BACKUPS

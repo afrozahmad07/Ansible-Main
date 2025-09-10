@@ -1,12 +1,13 @@
 Building configuration...
 
-Current configuration : 7959 bytes
+Current configuration : 9952 bytes
 !
-! Last configuration change at 20:30:53 UTC Wed Jul 31 2024 by admin
+! Last configuration change at 19:21:24 UTC Fri Aug 16 2024 by admin
 !
 version 17.12
 service timestamps debug datetime msec
 service timestamps log datetime msec
+service password-encryption
 service call-home
 platform qfp utilization monitor load 80
 platform punt-keepalive disable-kernel-core
@@ -19,12 +20,6 @@ boot-start-marker
 boot system bootflash:packages.conf
 boot-end-marker
 !
-!
-vrf definition CUST-E
- rd 800:800
- !
- address-family ipv4
- exit-address-family
 !
 no logging console
 aaa new-model
@@ -59,6 +54,7 @@ subscriber templating
 vtp version 1
 multilink bundle-name authenticated
 !
+password encryption aes
 pae
 !
 !
@@ -145,58 +141,101 @@ diagnostic bootup level minimal
 !
 object-group network OBJECTGROUP1 
  192.168.0.0 255.255.255.0
- 10.0.0.0 255.255.255.0
+ 10.0.0.0 255.0.0.0
  11.0.0.0 255.255.0.0
  host 12.0.0.1
 !
 object-group network OBJECTGROUP2 
  host 1.1.1.1
  192.168.1.0 255.255.255.0
+ 10.0.0.0 255.255.0.0
+ host 2.2.2.2
+ host 12.0.0.1
+!
+object-group network OBJECTGROUP3 
+ host 1.1.1.1
+ host 3.3.3.3
  10.0.0.0 255.255.255.0
  host 2.2.2.2
+!
+object-group service PORTGROUP1 
+ icmp echo-reply
+ tcp eq smtp
+ tcp eq telnet
+ tcp eq 8080
+!
+object-group service PORTGROUP2 
+ udp eq 1024
 !
 !
 !
 !
 username admin privilege 15 secret 9 $9$lgJxy7Ga.Th5FU$gocFhcHC/8pvixGr.s2wB7X59FiGVvwYawfCPrmaJuY
+username wsi password 6 RSd\TZgadAGMgcG\MCGQi]Y_FQhAAB
+username rafael password 6 ca^aEMcYORYIKiO\HADKYXE^GL_AAB
+username gr password 6 V[NHaGMeGLAC\C_UYb[FWgX]D]]AAB
+username gr1 password 6 PAgbVaDENACHgEAT\hBJdFFQFTGAAB
 !
 redundancy
 !
 !
 !
 !
+track 1 interface Loopback10 line-protocol
+ delay up 5
+!
 !
 !
 !
 !
 interface Loopback0
- ip address 10.0.0.1 255.255.255.0
+ no ip address
+!
+interface Loopback1
+ description test1
+ ip address 1.1.1.1 255.255.255.255
+!
+interface Loopback2
+ ip address 1.1.1.2 255.255.255.255
+!
+interface Loopback3
+ ip address 1.1.1.3 255.255.255.255
+!
+interface Loopback4
+ ip address 1.1.1.4 255.255.255.255
+!
+interface Loopback5
+ description testing python
+ ip address 1.1.1.5 255.255.255.255
 !
 interface Loopback10
- no ip address
+ ip address 192.168.1.1 255.255.255.0
 !
-interface Loopback7094
- description Netmiko Test loopback
- ip address 100.200.201.200 255.255.255.0
+interface Loopback100
+ description Configured by RESTCONF
+ ip address 172.16.100.1 255.255.255.0
+!
+interface Loopback310
+ ip address 6.6.6.6 255.255.255.255
+!
+interface Loopback311
+ description New Loop
+ ip address 3.3.3.3 255.255.255.255
 !
 interface VirtualPortGroup0
- ip address 192.168.1.1 255.255.255.0
- ip nat inside
+ ip address 192.168.2.1 255.255.255.0
 !
 interface GigabitEthernet1
- description MANAGEMENT INTERFACE - DON'T TOUCH ME
+ description IPv6 ADDRESS
  ip address 10.10.20.48 255.255.255.0
  negotiation auto
+ ipv6 address FE80::1:1 link-local
+ ipv6 address 2001:DB8:ACAD:1::1/64
 !
 interface GigabitEthernet2
- description Configured by RESTCONF
- no ip address
- shutdown
+ description COnfigured by RESTCONF
+ ip address 10.255.255.1 255.255.255.0
  negotiation auto
-!
-interface GigabitEthernet2.45
- encapsulation dot1Q 45
- ip address 7.7.7.7 255.255.255.0
 !
 interface GigabitEthernet3
  description Network Interface
@@ -204,8 +243,17 @@ interface GigabitEthernet3
  shutdown
  negotiation auto
 !
-router ospf 10
- network 10.0.0.0 0.255.255.255 area 0
+router ospf 1
+ passive-interface VirtualPortGroup0
+ network 192.168.0.0 0.0.0.255 area 0
+!
+router ospf 11
+ router-id 11.11.11.11
+!
+router ospf 55
+ router-id 192.168.100.1
+ network 22.11.33.44 0.0.0.0 area 300
+ neighbor 1.2.3.4
 !
 iox
 ip forward-protocol nd
@@ -220,6 +268,10 @@ ip ssh rsa keypair-name ssh-key
 ip scp server enable
 !
 !
+ip access-list extended NAT-ACL
+ 10 permit ip 192.168.1.0 0.0.0.255 any
+ip access-list extended Test
+ 10 permit ip any host 1.1.1.1
 ip access-list extended Test2
  10 permit ip any host 1.1.1.1
  20 permit tcp 192.168.0.0 0.0.0.255 10.0.0.0 0.0.0.255 eq 443
@@ -233,8 +285,13 @@ ip access-list extended Test2
 ip access-list extended Test3
  10 permit tcp host 1.1.1.1 eq 3389 any
  20 permit tcp 192.168.2.0 0.0.0.255 eq 22 10.10.10.0 0.0.0.255 eq telnet
+ 21 permit tcp object-group OBJECTGROUP2 object-group OBJECTGROUP3 eq 443
+ 22 permit tcp object-group OBJECTGROUP2 host 5.5.5.5 eq 443
  30 permit ip any any
+ 40 deny object-group PORTGROUP1 object-group OBJECTGROUP1 object-group OBJECTGROUP2
 !
+snmp-server group GROUP1 v3 priv read VIEW1 write VIEW1 
+snmp-server view VIEW1 iso included
 !
 !
 !
@@ -257,6 +314,7 @@ line con 0
  stopbits 1
 line aux 0
 line vty 0 4
+ exec-timeout 0 0
  length 0
  transport input ssh
 !
@@ -272,7 +330,16 @@ call-home
 !
 !
 !
+event manager applet RCA
+ event track 1 state down
+ action 0.0 cli command "enable"
+ action 1.0 cli command "guestshell run python3 eem_script.py loopback10"
+ action 2.0 syslog priority notifications msg "RCA Data Capture Complete"
 !
+app-hosting appid guestshell
+ app-vnic gateway1 virtualportgroup 0 guest-interface 0
+  guest-ipaddress 192.168.1.2 netmask 255.255.255.0
+ app-default-gateway 192.168.0.1 guest-interface 0
 netconf-yang
 restconf
 end
